@@ -13,7 +13,11 @@ type Props = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  await connectDB()
+  try {
+    await connectDB()
+  } catch {
+    return { title: 'Not Found' }
+  }
   const blog = await Blog.findOne({ slug, status: 'published' }).lean()
   if (!blog) return { title: 'Not Found' }
 
@@ -43,7 +47,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
-  await connectDB()
+  try {
+    await connectDB()
+  } catch {
+    notFound()
+  }
   const blog = await Blog.findOne({ slug, status: 'published' }).lean()
   if (!blog) notFound()
 
@@ -128,8 +136,14 @@ export default async function BlogPostPage({ params }: Props) {
   )
 }
 
+export const dynamicParams = true
+
 export async function generateStaticParams() {
-  await connectDB()
-  const blogs = await Blog.find({ status: 'published' }).select('slug').lean()
-  return blogs.map((b) => ({ slug: b.slug }))
+  try {
+    await connectDB()
+    const blogs = await Blog.find({ status: 'published' }).select('slug').lean()
+    return blogs.map((b) => ({ slug: b.slug as string }))
+  } catch {
+    return []
+  }
 }
