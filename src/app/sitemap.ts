@@ -1,4 +1,6 @@
 import type { MetadataRoute } from 'next'
+
+export const revalidate = 3600 // regenerate sitemap at most once per hour
 import { connectDB } from '@/lib/mongodb'
 import Blog from '@/models/Blog'
 
