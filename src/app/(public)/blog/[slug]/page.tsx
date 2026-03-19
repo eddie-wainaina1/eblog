@@ -2,8 +2,6 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { Container, Typography, Box, Chip, Divider, Button } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import SmartToyIcon from '@mui/icons-material/SmartToy'
-import PersonIcon from '@mui/icons-material/Person'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import type { Metadata } from 'next'
 import { connectDB } from '@/lib/mongodb'
@@ -70,7 +68,7 @@ export default async function BlogPostPage({ params }: Props) {
     image: blog.coverImage,
     datePublished: blog.publishedAt?.toISOString(),
     dateModified: blog.updatedAt.toISOString(),
-    author: { '@type': 'Person', name: blog.author || (blog.origin === 'ai' ? 'eblog.theewn AI' : 'eblog.theewn') },
+    author: { '@type': 'Organization', name: 'eblog.theewn' },
     keywords: blog.tags.join(', '),
   }
 
@@ -100,8 +98,7 @@ export default async function BlogPostPage({ params }: Props) {
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4, color: 'text.secondary' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            {blog.origin === 'ai' ? <SmartToyIcon fontSize="small" /> : <PersonIcon fontSize="small" />}
-            <Typography variant="body2">{blog.author || (blog.origin === 'ai' ? 'AI Generated' : 'Admin')}</Typography>
+            <Typography variant="body2">eblog.theewn</Typography>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
             <CalendarTodayIcon fontSize="small" />

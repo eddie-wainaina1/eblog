@@ -3,8 +3,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Card, CardContent, CardActionArea, Chip, Typography, Box, Stack } from '@mui/material'
-import SmartToyIcon from '@mui/icons-material/SmartToy'
-import PersonIcon from '@mui/icons-material/Person'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 
 interface BlogCardProps {
@@ -60,8 +58,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: 'text.secondary' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              {blog.origin === 'ai' ? <SmartToyIcon fontSize="small" /> : <PersonIcon fontSize="small" />}
-              <Typography variant="caption">{blog.author || (blog.origin === 'ai' ? 'AI' : 'Admin')}</Typography>
+              <Typography variant="caption">eblog.theewn</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <CalendarTodayIcon fontSize="small" />
