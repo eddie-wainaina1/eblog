@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
   title: {
-    default: 'eblog.theewn — Latest Articles & Trending Topics',
+    default: 'eblog.theewn - Latest Articles & Trending Topics',
     template: '%s | eblog.theewn',
   },
   description: 'Stay up to date with the latest articles, trends, and insights on eblog.theewn.',

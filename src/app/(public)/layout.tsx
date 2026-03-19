@@ -4,8 +4,8 @@ import Footer from '@/components/ui/Footer'
 import AdUnit from '@/components/ui/AdUnit'
 
 // Replace with your real ad slot IDs — use separate slots per side for independent reporting
-const LEFT_AD_SLOT = 'XXXXXXXXXX'
-const RIGHT_AD_SLOT = 'XXXXXXXXXX'
+const LEFT_AD_SLOT = '4236919287'
+const RIGHT_AD_SLOT = '4856833980'
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
