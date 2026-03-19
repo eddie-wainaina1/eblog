@@ -114,17 +114,13 @@ export default async function HomePage({
           <>
             {/* Featured post */}
             {featured && (
+              <Link href={`/blog/${featured.slug}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block', marginBottom: 48 }}>
               <Box
-                component={Link}
-                href={`/blog/${featured.slug}`}
                 sx={{
                   display: 'flex',
                   flexDirection: { xs: 'column', md: 'row' },
                   borderRadius: 3,
                   overflow: 'hidden',
-                  mb: 6,
-                  textDecoration: 'none',
-                  color: 'inherit',
                   bgcolor: 'background.paper',
                   boxShadow: 2,
                   transition: 'box-shadow 0.2s',
@@ -162,6 +158,7 @@ export default async function HomePage({
                   </Typography>
                 </Box>
               </Box>
+              </Link>
             )}
 
             {/* Tag filter */}
