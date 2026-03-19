@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState, useEffect, useCallback } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Container, Box, Typography, Button, ToggleButtonGroup, ToggleButton, CircularProgress, Alert } from '@mui/material'
 import Link from 'next/link'
@@ -30,19 +30,25 @@ function AdminBlogsContent() {
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
   const [genMessage, setGenMessage] = useState('')
+  const [refreshKey, setRefreshKey] = useState(0)
 
-  const fetchBlogs = useCallback(async () => {
-    setLoading(true)
-    const params = new URLSearchParams({ admin: '1', limit: '50' })
-    if (status) params.set('status', status)
-    const res = await fetch(`/api/blogs?${params}`)
-    const data = await res.json()
-    setBlogs(data.blogs ?? [])
-    setTotal(data.total ?? 0)
-    setLoading(false)
-  }, [status])
-
-  useEffect(() => { fetchBlogs() }, [fetchBlogs])
+  useEffect(() => {
+    let cancelled = false
+    const run = async () => {
+      setLoading(true)
+      const params = new URLSearchParams({ admin: '1', limit: '50' })
+      if (status) params.set('status', status)
+      const res = await fetch(`/api/blogs?${params}`)
+      const data = await res.json()
+      if (!cancelled) {
+        setBlogs(data.blogs ?? [])
+        setTotal(data.total ?? 0)
+        setLoading(false)
+      }
+    }
+    run()
+    return () => { cancelled = true }
+  }, [status, refreshKey])
 
   const handleGenerateNow = async () => {
     setGenerating(true)
@@ -50,7 +56,7 @@ function AdminBlogsContent() {
     const res = await fetch('/api/cron/generate-blogs', { method: 'POST' })
     if (res.ok) {
       setGenMessage('AI blog generation triggered. Refresh to see the new pending blog.')
-      fetchBlogs()
+      setRefreshKey(k => k + 1)
     } else {
       setGenMessage('Generation failed — check ANTHROPIC_API_KEY and CRON_SECRET.')
     }
@@ -89,7 +95,7 @@ function AdminBlogsContent() {
       {loading ? (
         <Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /></Box>
       ) : (
-        <BlogTable blogs={blogs} onRefresh={fetchBlogs} />
+        <BlogTable blogs={blogs} onRefresh={() => setRefreshKey(k => k + 1)} />
       )}
     </Container>
   )

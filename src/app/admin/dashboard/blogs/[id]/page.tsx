@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, FormEvent, use } from 'react'
-import { useRouter } from 'next/navigation'
 import { Container, Box, Typography, TextField, Button, Alert, MenuItem, CircularProgress, Chip, Autocomplete } from '@mui/material'
 import SaveIcon from '@mui/icons-material/Save'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
@@ -11,8 +10,6 @@ import MarkdownEditor from '@/components/admin/MarkdownEditor'
 
 export default function EditBlogPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
-  const router = useRouter()
-
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [coverImage, setCoverImage] = useState('')
