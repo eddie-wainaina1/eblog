@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { Suspense, useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Container, Box, Typography, Button, ToggleButtonGroup, ToggleButton, CircularProgress, Alert } from '@mui/material'
 import Link from 'next/link'
@@ -22,7 +22,7 @@ interface BlogRow {
   publishedAt: string | null
 }
 
-export default function AdminBlogsPage() {
+function AdminBlogsContent() {
   const searchParams = useSearchParams()
   const [status, setStatus] = useState<BlogStatus>((searchParams.get('status') ?? '') as BlogStatus)
   const [blogs, setBlogs] = useState<BlogRow[]>([])
@@ -49,7 +49,7 @@ export default function AdminBlogsPage() {
     setGenMessage('')
     const res = await fetch('/api/cron/generate-blogs', {
       method: 'POST',
-      headers: { 'x-cron-secret': '' }, // requires manual trigger from server; redirect to API
+      headers: { 'x-cron-secret': '' },
     })
     if (res.ok) {
       setGenMessage('AI blog generation triggered. Refresh to see the new pending blog.')
@@ -95,5 +95,13 @@ export default function AdminBlogsPage() {
         <BlogTable blogs={blogs} onRefresh={fetchBlogs} />
       )}
     </Container>
+  )
+}
+
+export default function AdminBlogsPage() {
+  return (
+    <Suspense fallback={<Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /></Box>}>
+      <AdminBlogsContent />
+    </Suspense>
   )
 }

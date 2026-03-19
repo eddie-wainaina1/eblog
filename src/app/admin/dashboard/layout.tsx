@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { Box } from '@mui/material'
 import AdminSidebar from '@/components/admin/AdminSidebar'
 
