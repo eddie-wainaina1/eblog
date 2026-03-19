@@ -47,10 +47,7 @@ function AdminBlogsContent() {
   const handleGenerateNow = async () => {
     setGenerating(true)
     setGenMessage('')
-    const res = await fetch('/api/cron/generate-blogs', {
-      method: 'POST',
-      headers: { 'x-cron-secret': '' },
-    })
+    const res = await fetch('/api/cron/generate-blogs', { method: 'POST' })
     if (res.ok) {
       setGenMessage('AI blog generation triggered. Refresh to see the new pending blog.')
       fetchBlogs()

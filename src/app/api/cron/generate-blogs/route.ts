@@ -4,18 +4,19 @@ import Blog from '@/models/Blog'
 import { getGoogleTrends } from '@/lib/trends'
 import { generateBlogFromTrend } from '@/lib/claude'
 import { markdownToHtml } from '@/lib/markdown'
+import { getSession } from '@/lib/auth'
 
-// Called by Vercel Cron every 6 hours.
-// Also callable manually: POST /api/cron/generate-blogs (with x-cron-secret header)
+// Called by Vercel Cron daily, or manually from the admin dashboard.
 export async function POST(request: NextRequest) {
-  // Verify cron secret (Vercel sends Authorization: Bearer <secret>)
   const authHeader = request.headers.get('authorization')
   const cronSecret = request.headers.get('x-cron-secret')
 
   const isVercelCron = authHeader === `Bearer ${process.env.CRON_SECRET}`
   const isManual = cronSecret === process.env.CRON_SECRET
+  const session = await getSession()
+  const isAdmin = session?.role === 'admin'
 
-  if (!isVercelCron && !isManual) {
+  if (!isVercelCron && !isManual && !isAdmin) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
