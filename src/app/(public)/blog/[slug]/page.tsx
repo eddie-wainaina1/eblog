@@ -1,12 +1,6 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-import Link from 'next/link'
-import Container from '@mui/material/Container'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
-import Divider from '@mui/material/Divider'
-import Button from '@mui/material/Button'
+import { Container, Typography, Box, Chip, Divider, Button } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import PersonIcon from '@mui/icons-material/Person'
@@ -68,7 +62,7 @@ export default async function BlogPostPage({ params }: Props) {
     image: blog.coverImage,
     datePublished: blog.publishedAt?.toISOString(),
     dateModified: blog.updatedAt.toISOString(),
-    author: { '@type': 'Person', name: blog.author || (blog.origin === 'ai' ? 'eBlog AI' : 'eBlog Admin') },
+    author: { '@type': 'Person', name: blog.author || (blog.origin === 'ai' ? 'eblog.theewn AI' : 'eblog.theewn') },
     keywords: blog.tags.join(', '),
   }
 
@@ -76,7 +70,7 @@ export default async function BlogPostPage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Container maxWidth="md" sx={{ py: 6 }}>
-        <Button component={Link} href="/" startIcon={<ArrowBackIcon />} sx={{ mb: 3 }} color="inherit">
+        <Button href="/" startIcon={<ArrowBackIcon />} sx={{ mb: 3 }} color="inherit">
           Back to articles
         </Button>
 
@@ -88,7 +82,7 @@ export default async function BlogPostPage({ params }: Props) {
 
         <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
           {blog.tags.map((tag) => (
-            <Chip key={tag} label={tag} size="small" component={Link} href={`/?tag=${encodeURIComponent(tag)}`} clickable variant="outlined" color="primary" />
+            <Chip key={tag} label={tag} size="small" component="a" href={`/?tag=${encodeURIComponent(tag)}`} clickable variant="outlined" color="primary" />
           ))}
         </Box>
 

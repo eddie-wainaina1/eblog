@@ -1,4 +1,4 @@
-import Box from '@mui/material/Box'
+import { Box } from '@mui/material'
 import AdminSidebar from '@/components/admin/AdminSidebar'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

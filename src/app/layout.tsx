@@ -7,13 +7,14 @@ const inter = Inter({ subsets: ['latin'], display: 'swap' })
 
 export const metadata: Metadata = {
   title: {
-    default: 'eBlog — Latest Articles & Trending Topics',
-    template: '%s | eBlog',
+    default: 'eblog.theewn — Latest Articles & Trending Topics',
+    template: '%s | eblog.theewn',
   },
-  description: 'Stay up to date with the latest articles, trends, and insights on eBlog.',
+  description: 'Stay up to date with the latest articles, trends, and insights on eblog.theewn.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'),
   robots: { index: true, follow: true },
-  openGraph: { siteName: 'eBlog', type: 'website' },
+  icons: { icon: '/icon.svg' },
+  openGraph: { siteName: 'eblog.theewn', type: 'website', images: [{ url: '/logo.png' }] },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

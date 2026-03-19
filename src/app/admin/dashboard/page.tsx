@@ -1,12 +1,4 @@
-import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
-import Grid from '@mui/material/Grid'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import Chip from '@mui/material/Chip'
-import Link from 'next/link'
+import { Box, Container, Grid, Card, CardContent, Typography, Button, Chip } from '@mui/material'
 import ArticleIcon from '@mui/icons-material/Article'
 import PendingActionsIcon from '@mui/icons-material/PendingActions'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges'
@@ -39,7 +31,7 @@ export default async function DashboardPage() {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
         <Typography variant="h4" fontWeight={700}>Dashboard</Typography>
-        <Button component={Link} href="/admin/dashboard/blogs/new" variant="contained" startIcon={<AddCircleIcon />}>
+        <Button href="/admin/dashboard/blogs/new" variant="contained" startIcon={<AddCircleIcon />}>
           New Blog
         </Button>
       </Box>
@@ -66,7 +58,7 @@ export default async function DashboardPage() {
         <CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
             <Typography variant="h6" fontWeight={600}>Recent Blogs</Typography>
-            <Button component={Link} href="/admin/dashboard/blogs" size="small">View all</Button>
+            <Button href="/admin/dashboard/blogs" size="small">View all</Button>
           </Box>
           {stats.recent.map((blog) => (
             <Box key={String(blog._id)} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
@@ -86,7 +78,7 @@ export default async function DashboardPage() {
           ))}
           {stats.pending > 0 && (
             <Box sx={{ mt: 2 }}>
-              <Button component={Link} href="/admin/dashboard/blogs?status=pending" color="warning" variant="outlined" fullWidth>
+              <Button href="/admin/dashboard/blogs?status=pending" color="warning" variant="outlined" fullWidth>
                 Review {stats.pending} pending blog{stats.pending !== 1 ? 's' : ''}
               </Button>
             </Box>

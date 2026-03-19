@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   AppBar,
   Toolbar,
-  Typography,
   Button,
   IconButton,
   Drawer,
@@ -14,12 +14,8 @@ import {
   ListItemButton,
   ListItemText,
   Box,
-  Container,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
-import ArticleIcon from '@mui/icons-material/Article'
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -28,53 +24,44 @@ const navLinks = [
 
 export default function Navigation() {
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
-    <AppBar position="sticky" color="inherit" elevation={1}>
-      <Container maxWidth="lg">
-        <Toolbar disableGutters>
-          <ArticleIcon sx={{ mr: 1, color: 'primary.main' }} />
-          <Typography
-            variant="h6"
-            component={Link}
-            href="/"
-            sx={{ flexGrow: 1, textDecoration: 'none', color: 'text.primary', fontWeight: 700 }}
-          >
-            eBlog
-          </Typography>
+    <AppBar position="sticky" elevation={0} sx={{ bgcolor: 'primary.main' }}>
+      <Toolbar sx={{ px: { xs: 2, sm: 3 } }}>
+        <Box component={Link} href="/" sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+          <Image src="/logo.svg" alt="EWN logo" width={52} height={52} priority />
+        </Box>
 
-          {isMobile ? (
-            <>
-              <IconButton onClick={() => setDrawerOpen(true)}>
-                <MenuIcon />
-              </IconButton>
-              <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-                <Box sx={{ width: 220 }}>
-                  <List>
-                    {navLinks.map((link) => (
-                      <ListItem key={link.href} disablePadding>
-                        <ListItemButton component={Link} href={link.href} onClick={() => setDrawerOpen(false)}>
-                          <ListItemText primary={link.label} />
-                        </ListItemButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-              </Drawer>
-            </>
-          ) : (
-            <Box sx={{ display: 'flex', gap: 1 }}>
+        {/* Desktop nav — hidden on xs */}
+        <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 1 }}>
+          {navLinks.map((link) => (
+            <Button key={link.href} component={Link} href={link.href} sx={{ color: 'white', '&:hover': { bgcolor: 'primary.dark' } }}>
+              {link.label}
+            </Button>
+          ))}
+        </Box>
+
+        {/* Mobile menu button — hidden on sm+ */}
+        <Box sx={{ display: { xs: 'flex', sm: 'none' } }}>
+          <IconButton onClick={() => setDrawerOpen(true)} sx={{ color: 'white' }}>
+            <MenuIcon />
+          </IconButton>
+        </Box>
+
+        <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+          <Box sx={{ width: 220 }}>
+            <List>
               {navLinks.map((link) => (
-                <Button key={link.href} component={Link} href={link.href} color="inherit">
-                  {link.label}
-                </Button>
+                <ListItem key={link.href} disablePadding>
+                  <ListItemButton component={Link} href={link.href} onClick={() => setDrawerOpen(false)}>
+                    <ListItemText primary={link.label} />
+                  </ListItemButton>
+                </ListItem>
               ))}
-            </Box>
-          )}
-        </Toolbar>
-      </Container>
+            </List>
+          </Box>
+        </Drawer>
+      </Toolbar>
     </AppBar>
   )
 }

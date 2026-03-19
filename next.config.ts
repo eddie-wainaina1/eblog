@@ -2,6 +2,10 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  turbopack: {
+    // Explicit project root so Turbopack ignores the stray lockfile at ~/package-lock.json
+    root: __dirname,
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },

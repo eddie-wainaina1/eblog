@@ -2,15 +2,9 @@
 
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import Alert from '@mui/material/Alert'
+import { Box, Paper, TextField, Button, Typography, Alert, CircularProgress } from '@mui/material'
 import ArticleIcon from '@mui/icons-material/Article'
 import LockIcon from '@mui/icons-material/Lock'
-import CircularProgress from '@mui/material/CircularProgress'
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -51,7 +45,7 @@ export default function AdminLoginPage() {
         <Box sx={{ textAlign: 'center', mb: 4 }}>
           <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, mb: 1 }}>
             <ArticleIcon color="primary" sx={{ fontSize: 36 }} />
-            <Typography variant="h5" fontWeight={700}>eBlog</Typography>
+            <Typography variant="h5" fontWeight={700}>eblog.theewn</Typography>
           </Box>
           <Typography variant="body2" color="text.secondary">Admin Login</Typography>
         </Box>

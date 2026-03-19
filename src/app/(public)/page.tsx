@@ -1,102 +1,55 @@
-import { Suspense } from 'react'
-import Container from '@mui/material/Container'
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
-import CircularProgress from '@mui/material/CircularProgress'
+import { Container, Grid, Typography, Box } from '@mui/material'
+import ArticleIcon from '@mui/icons-material/Article'
 import type { Metadata } from 'next'
 import { connectDB } from '@/lib/mongodb'
 import Blog from '@/models/Blog'
 import BlogCard from '@/components/blog/BlogCard'
+import TagFilter from '@/components/blog/TagFilter'
 
 export const metadata: Metadata = {
-  title: 'eBlog — Latest Articles & Trending Topics',
-  description: 'Stay up to date with the latest articles, trends, and insights on eBlog.',
+  title: 'eblog.theewn — Latest Articles & Trending Topics',
+  description: 'Stay up to date with the latest articles, trends, and insights on eblog.theewn.',
   openGraph: {
-    title: 'eBlog — Latest Articles & Trending Topics',
-    description: 'Stay up to date with the latest articles, trends, and insights on eBlog.',
+    title: 'eblog.theewn — Latest Articles & Trending Topics',
+    description: 'Stay up to date with the latest articles, trends, and insights on eblog.theewn.',
     type: 'website',
   },
 }
 
-async function BlogList({ tag, page }: { tag?: string; page: number }) {
-  await connectDB()
-
-  const limit = 12
-  const query: Record<string, unknown> = { status: 'published' }
-  if (tag) query.tags = tag
-
-  const [blogs, total] = await Promise.all([
-    Blog.find(query)
-      .sort({ publishedAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .select('-htmlContent -content')
-      .lean(),
-    Blog.countDocuments(query),
-  ])
-
-  const allTags = await Blog.distinct('tags', { status: 'published' })
-
-  if (!blogs.length) {
-    return (
-      <Box sx={{ textAlign: 'center', py: 10 }}>
-        <Typography variant="h5" color="text.secondary">No articles published yet.</Typography>
-        <Typography color="text.secondary" sx={{ mt: 1 }}>Check back soon!</Typography>
-      </Box>
-    )
-  }
-
-  return (
-    <>
-      {allTags.length > 0 && (
-        <Box sx={{ mb: 4, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-          <Chip label="All" component="a" href="/" clickable color={!tag ? 'primary' : 'default'} variant={!tag ? 'filled' : 'outlined'} />
-          {(allTags as string[]).map((t) => (
-            <Chip
-              key={t}
-              label={t}
-              component="a"
-              href={`/?tag=${encodeURIComponent(t)}`}
-              clickable
-              color={tag === t ? 'primary' : 'default'}
-              variant={tag === t ? 'filled' : 'outlined'}
-            />
-          ))}
-        </Box>
-      )}
-
-      <Grid container spacing={3}>
-        {blogs.map((blog) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={String(blog._id)}>
-            <BlogCard blog={{
-              _id: String(blog._id),
-              title: blog.title,
-              slug: blog.slug,
-              excerpt: blog.excerpt,
-              coverImage: blog.coverImage,
-              tags: blog.tags,
-              origin: blog.origin,
-              author: blog.author,
-              publishedAt: blog.publishedAt ? blog.publishedAt.toISOString() : null,
-              createdAt: blog.createdAt.toISOString(),
-            }} />
-          </Grid>
-        ))}
-      </Grid>
-
-      <Box sx={{ textAlign: 'center', mt: 4 }}>
-        <Typography variant="body2" color="text.secondary">{total} article{total !== 1 ? 's' : ''} total</Typography>
-      </Box>
-    </>
-  )
-}
-
-export default async function HomePage({ searchParams }: { searchParams: Promise<{ tag?: string; page?: string }> }) {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tag?: string; page?: string }>
+}) {
   const sp = await searchParams
   const tag = sp.tag
   const page = Math.max(1, parseInt(sp.page ?? '1'))
+  const limit = 12
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let blogs: any[] = []
+  let total = 0
+  let allTags: string[] = []
+  let error = false
+
+  try {
+    await connectDB()
+    const query: Record<string, unknown> = { status: 'published' }
+    if (tag) query.tags = tag
+
+    ;[blogs, total, allTags] = await Promise.all([
+      Blog.find(query)
+        .sort({ publishedAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .select('-htmlContent -content')
+        .lean(),
+      Blog.countDocuments(query),
+      Blog.distinct('tags', { status: 'published' }),
+    ])
+  } catch {
+    error = true
+  }
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }} id="blogs">
@@ -109,9 +62,56 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         </Typography>
       </Box>
 
-      <Suspense fallback={<Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /></Box>}>
-        <BlogList tag={tag} page={page} />
-      </Suspense>
+      {error ? (
+        <Box sx={{ textAlign: 'center', py: 10 }}>
+          <ArticleIcon sx={{ fontSize: 56, color: 'text.disabled', mb: 2 }} />
+          <Typography variant="h5" gutterBottom>Could not load articles</Typography>
+          <Typography color="text.secondary">
+            We&apos;re having trouble connecting right now. Please try again shortly.
+          </Typography>
+        </Box>
+      ) : blogs.length === 0 ? (
+        <Box sx={{ textAlign: 'center', py: 10 }}>
+          <ArticleIcon sx={{ fontSize: 56, color: 'text.disabled', mb: 2 }} />
+          <Typography variant="h5" gutterBottom>
+            {tag ? `No articles tagged "#${tag}" yet` : 'No articles published yet'}
+          </Typography>
+          <Typography color="text.secondary">
+            {tag ? 'Try browsing all articles instead.' : 'Check back soon — new content is on the way.'}
+          </Typography>
+        </Box>
+      ) : (
+        <>
+          <TagFilter tags={allTags as string[]} active={tag} />
+
+          <Grid container spacing={3}>
+            {blogs.map((blog) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={String(blog._id)}>
+                <BlogCard
+                  blog={{
+                    _id: String(blog._id),
+                    title: blog.title,
+                    slug: blog.slug,
+                    excerpt: blog.excerpt,
+                    coverImage: blog.coverImage,
+                    tags: blog.tags,
+                    origin: blog.origin,
+                    author: blog.author,
+                    publishedAt: blog.publishedAt ? blog.publishedAt.toISOString() : null,
+                    createdAt: blog.createdAt.toISOString(),
+                  }}
+                />
+              </Grid>
+            ))}
+          </Grid>
+
+          <Box sx={{ textAlign: 'center', mt: 4 }}>
+            <Typography variant="body2" color="text.secondary">
+              {total} article{total !== 1 ? 's' : ''} total
+            </Typography>
+          </Box>
+        </>
+      )}
     </Container>
   )
 }

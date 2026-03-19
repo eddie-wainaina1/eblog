@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   Drawer,
   List,
@@ -51,8 +52,8 @@ export default function AdminSidebar() {
     >
       <Toolbar>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <ArticleIcon color="primary" />
-          <Typography variant="h6" fontWeight={700}>eBlog Admin</Typography>
+          <Image src="/logo.svg" alt="EWN logo" width={32} height={32} />
+          <Typography variant="h6" fontWeight={700}>EWN Admin</Typography>
         </Box>
       </Toolbar>
       <Divider />
