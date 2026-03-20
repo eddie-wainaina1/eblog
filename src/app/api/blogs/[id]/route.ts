@@ -62,7 +62,7 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     if (body.seoTitle !== undefined) updates.seoTitle = body.seoTitle
     if (body.seoDescription !== undefined) updates.seoDescription = body.seoDescription
 
-    const blog = await Blog.findByIdAndUpdate(id, updates, { new: true })
+    const blog = await Blog.findByIdAndUpdate(id, updates, { returnDocument: 'after' })
     if (!blog) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
     return NextResponse.json(blog)

@@ -17,7 +17,7 @@ export async function POST(_request: NextRequest, { params }: RouteContext) {
     const blog = await Blog.findByIdAndUpdate(
       id,
       { status: 'published', publishedAt: new Date(), author: session.email },
-      { new: true },
+      { returnDocument: 'after' },
     )
 
     if (!blog) return NextResponse.json({ error: 'Not found' }, { status: 404 })
