@@ -66,7 +66,8 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     if (!blog) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
     return NextResponse.json(blog)
-  } catch {
+  } catch (err) {
+    console.error('[PUT /api/blogs/[id]]', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
